@@ -1,0 +1,27 @@
+<h1>Vote Now!</h1>
+
+<div class="options">
+  <% ['A', 'B'].each do |option| %>
+  <div class="option" id="option-<%= option %>">
+    <span class="option-title"><%= option %></span>
+  </div>
+  <% end %>
+</div>
+
+<script>
+  const sendVote = vote => fetch(
+    '/vote',
+    {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({dip: vote})
+    }
+  ).then(() => window.location = '/voted')
+
+  document.getElementById('option-A').addEventListener('click', () => sendVote('A'))
+  document.getElementById('option-B').addEventListener('click', () => sendVote('B'))
+
+</script>

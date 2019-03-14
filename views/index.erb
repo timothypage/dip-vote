@@ -1,0 +1,12 @@
+<div class="login">
+  <form method="POST" action="/login-by-email">
+    <label for="email">Login By Entering your Email
+      <input type="text" name="email" />
+    </label>
+  </form>
+
+  <div class="contestants">
+    <% @contestants.each do |c| %>
+      <p><%= c.name %></p>
+    <% end %>
+</div>
