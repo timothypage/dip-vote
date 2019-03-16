@@ -17,6 +17,11 @@
   align-items: center;
   color: white;
   cursor: pointer;
+  border-radius: 5px;
+}
+
+.options .option.votedFor {
+  outline: thick double #32a1ce;
 }
 
 .options .option:hover {
@@ -33,4 +38,8 @@
 
 .options .option:nth-of-type(3) {
   background-color: blue;
+}
+
+.options .option.voting {
+  background-color: #aaa;
 }

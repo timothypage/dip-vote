@@ -19,7 +19,12 @@
       },
       body: JSON.stringify({dip: vote})
     }
-  ).then(() => window.location = '/voted')
+  ).then(() => {
+    document.getElementById('option-A').classList.remove('voting', 'votedFor')
+    document.getElementById('option-B').classList.remove('voting', 'votedFor')
+
+    document.getElementById(`option-${vote}`).classList.add('votedFor')
+  })
 
   document.getElementById('option-A').addEventListener('click', () => sendVote('A'))
   document.getElementById('option-B').addEventListener('click', () => sendVote('B'))

@@ -3,19 +3,18 @@ require 'sinatra'
 require 'sinatra/json'
 require 'jwt'
 require 'sysrandom/securerandom'
-require 'sequel'
-require 'sequel/model'
+
+require './db'
 
 enable :sessions
 
+# changing this will invalidate any active sessions
 set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
 
+# changing this will invalidate all login tokens
 signing_secret = ENV.fetch('TOKEN_SIGNING_SECRET') { SecureRandom.hex(64) }
 
-DB = Sequel.sqlite('db/app_development.db')
-Sequel::Model.db = DB
-
-require_all './models/*'
+logger = Logger.new(STDOUT)
 
 get "/" do
   @contestants = Contestant.all
@@ -23,11 +22,17 @@ get "/" do
 end
 
 post "/login-by-email" do
-  token = JWT.encode params[:email], signing_secret, "HS256"
 
-  puts "received login request from #{params[:email]}"
-  puts "token generated: #{token}"
-  puts "login: http://localhost:4567/login?token=#{token}"
+  lowercase_email = params[:email] && params[:email].downcase
+
+  if (user = User.find(email: lowercase_email))
+    token = JWT.encode params[:email], signing_secret, "HS256"
+
+    logger.info "received login request from #{params[:email]}"
+    logger.info "login: http://localhost:4567/login?token=#{token}"
+  else
+    logger.info "someone tried to login with email: #{lowercase_email}, but that user doesn't exist"
+  end
 
   erb :login_by_email
 end
@@ -53,12 +58,13 @@ get "/vote" do
   erb :vote
 end
 
+# application/json
 post "/vote" do
   halt 401 unless session[:email] # security!
 
   payload = JSON.parse request.body.read
 
-  Vote.create(email: session[:email], dip: payload["dip"])
+  Vote.update_or_create({email: session[:email]}, dip: payload["dip"]).to_json
 end
 
 get "/voted" do
