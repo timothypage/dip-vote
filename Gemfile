@@ -12,3 +12,7 @@ gem "require_all"
 gem "pry"
 gem "jwt"
 gem "sysrandom"
+
+group :production do
+  gem "tiny_tds"
+end

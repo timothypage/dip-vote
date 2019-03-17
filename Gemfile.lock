@@ -30,6 +30,7 @@ GEM
     sqlite3 (1.4.0)
     sysrandom (1.0.5)
     tilt (2.0.9)
+    tiny_tds (2.1.2)
 
 PLATFORMS
   ruby
@@ -43,6 +44,7 @@ DEPENDENCIES
   sinatra-contrib
   sqlite3
   sysrandom
+  tiny_tds
 
 BUNDLED WITH
    1.17.2
